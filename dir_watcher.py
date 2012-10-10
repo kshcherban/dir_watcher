@@ -30,19 +30,22 @@ def daemonize(logfile):
     if os.fork():
       os._exit(0)
     os.setsid()
-    pid = os.getpid()
-    print 'To kill daemon run:'
-    print 'kill', pid
+    """
     if logfile != sys.stdout:
         f = open(logfile, 'a')
     else:
-        f = logfile
+        f = open('/dev/null', 'a')
+    """
     # Pidfile, should be implemented in future
     # pidfile = open('/tmp/dir_watcher.pid', 'a')
-    sys.stdout = f
-    sys.stderr = f
-    if logfile != sys.stdout:
-        f.close()
+    #sys.stdout = open(os.devnull, 'w')
+    #sys.stderr = open(os.devnull, 'w')
+
+# turning stdout off
+class NullDevice():
+    def write(self, s):
+        pass
+
 
 # Handling files modifications class
 class OnModifyHandler(pyinotify.ProcessEvent):
@@ -121,6 +124,8 @@ if __name__ == '__main__':
     help="log file location [optional]")
     parser.add_option("-t", "--time", dest="synctime", \
     help="execution frequency in seconds after last change [optional]")
+    parser.add_option("-b", "--background", action="store_true", dest="daemonize", \
+    help="run in background [optional]")
     (options, args) = parser.parse_args()
     if options.directory is None:
         parser.error('Please specify directory or file to watch changes')
@@ -132,12 +137,15 @@ if __name__ == '__main__':
     # If output file is not set we redirect log messages to stdout
     if options.logfile is None:
         options.logfile = sys.stdout
+    if options.daemonize is True:
+        if options.logfile == sys.stdout:
+            options.logfile = os.devnull
+        daemonize(options.logfile)
     # Adding mask for all file modifications
     mask = pyinotify.ALL_EVENTS
     wm = pyinotify.WatchManager()
     handler = OnModifyHandler(start_time = time.time(), cmd = options.execute,\
-    sync_time = options.synctime, cwd = options.directory, logfile = options.logfile)
+    sync_time = int(options.synctime), cwd = options.directory, logfile = options.logfile)
     notifier = pyinotify.Notifier(wm, default_proc_fun=handler)
     wm.add_watch(options.directory, mask)
-    daemonize(options.logfile)
     notifier.loop()
