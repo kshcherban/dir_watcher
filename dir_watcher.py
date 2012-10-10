@@ -33,10 +33,16 @@ def daemonize(logfile):
     pid = os.getpid()
     print 'To kill daemon run:'
     print 'kill', pid
+    if self.logfile != sys.stdout:
+        f = open(logfile, 'a')
+    else:
+        f = logfile
     # Pidfile, should be implemented in future
     # pidfile = open('/tmp/dir_watcher.pid', 'a')
-    #sys.stdout = open('/dev/null', 'a')
-    #sys.stderr = open('/dev/null', 'a')
+    sys.stdout = f
+    sys.stderr = f
+    if self.logfile != sys.stdout:
+        f.close()
 
 # Handling files modifications class
 class OnModifyHandler(pyinotify.ProcessEvent):
