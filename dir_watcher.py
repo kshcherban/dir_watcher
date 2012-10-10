@@ -33,7 +33,7 @@ def daemonize(logfile):
     pid = os.getpid()
     print 'To kill daemon run:'
     print 'kill', pid
-    if self.logfile != sys.stdout:
+    if logfile != sys.stdout:
         f = open(logfile, 'a')
     else:
         f = logfile
@@ -41,7 +41,7 @@ def daemonize(logfile):
     # pidfile = open('/tmp/dir_watcher.pid', 'a')
     sys.stdout = f
     sys.stderr = f
-    if self.logfile != sys.stdout:
+    if logfile != sys.stdout:
         f.close()
 
 # Handling files modifications class
@@ -139,5 +139,5 @@ if __name__ == '__main__':
     sync_time = options.synctime, cwd = options.directory, logfile = options.logfile)
     notifier = pyinotify.Notifier(wm, default_proc_fun=handler)
     wm.add_watch(options.directory, mask)
-    #daemonize(options.logfile)
+    daemonize(options.logfile)
     notifier.loop()
