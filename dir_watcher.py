@@ -151,5 +151,5 @@ if __name__ == '__main__':
     handler = OnModifyHandler(start_time = time.time(), cmd = options.execute,\
     sync_time = int(options.synctime), cwd = options.directory, logfile = options.logfile)
     notifier = pyinotify.Notifier(wm, default_proc_fun=handler)
-    wm.add_watch(options.directory, mask)
+    wm.add_watch(options.directory, mask, rec=True, auto_add=True)
     notifier.loop()
