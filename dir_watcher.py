@@ -137,6 +137,10 @@ if __name__ == '__main__':
     # If output file is not set we redirect log messages to stdout
     if options.logfile is None:
         options.logfile = sys.stdout
+    # Check time parameter to be digit
+    if options.synctime is not None and (options.synctime.isdigit() is False):
+        parser.error('Please specify time in integer number format')
+    # Background option check
     if options.daemonize is True:
         if options.logfile == sys.stdout:
             options.logfile = os.devnull
