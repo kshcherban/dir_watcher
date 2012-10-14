@@ -11,3 +11,6 @@ Tracking following modifications based on pyinotify:
 	* a file was modified
 
 Also implements simple logging to file or stdout.
+
+Working on Python >= 2.6 but <= 3.0.
+Requirements: pyinotify
