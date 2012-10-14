@@ -23,7 +23,6 @@ import optparse
 import pyinotify
 import subprocess
 
-path = '/home/insider/Downloads/test'
 
 # Function to become a daemon
 def daemonize(logfile):
